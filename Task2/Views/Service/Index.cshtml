@@ -1,0 +1,10 @@
+﻿@inject ICourseRepository CourseRepo
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h3>Id from controller @ViewBag.Id</h3>
+
+<h3>Id from view @CourseRepo.Id</h3>

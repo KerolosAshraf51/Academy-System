@@ -1,0 +1,49 @@
+﻿@model Task2.Models.Course
+
+@{
+    ViewData["Title"] = "Add Course";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+    <form asp-action="SaveCourse" class="mt-4">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Enter course name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Degree" class="control-label"></label>
+                <input asp-for="Degree" class="form-control" placeholder="Enter course degree" />
+                <span asp-validation-for="Degree" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="MinDegree" class="control-label"></label>
+                <input asp-for="MinDegree" class="form-control" placeholder="Enter minimum degree" />
+                <span asp-validation-for="MinDegree" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Hours" class="control-label"></label>
+                <input asp-for="Hours" class="form-control" placeholder="Enter number of hours" />
+                <span asp-validation-for="Hours" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Dept_id" class="control-label"></label>
+            <select asp-for="Dept_id" class="form-control" asp-items="@(new SelectList(ViewBag.Departments, "Id", "Name"))">
+                <option value="">Select Department</option>
+            </select>
+            <span asp-validation-for="Dept_id" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i>Save</button>
+    </form>
+</div>
+
+@* Add JS Links *@
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

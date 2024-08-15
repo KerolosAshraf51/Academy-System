@@ -1,0 +1,55 @@
+﻿@model List<Task2.Models.Course>
+
+@{
+    ViewData["Title"] = "Courses";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Search Form -->
+        <form asp-action="Search" method="get" class="form-inline">
+            <input type="text" name="searchTerm" class="form-control mr-2" placeholder="Search courses" />
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+        
+        <!-- Add Course Button -->
+        <a asp-action="Add" asp-controller="Course" class="btn btn-success">
+            <i class="fas fa-plus-circle mr-1"></i> Add Course
+        </a>
+    </div>
+
+    <!-- Courses Table -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Degree</th>
+                    <th>Min Degree</th>
+                    <th>Hours</th>
+                    <th>Department ID</th>
+                    <th>Department Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Degree</td>
+                        <td>@item.MinDegree</td>
+                        <td>@item.Hours</td>
+                        <td>@item.Dept_id</td>
+                        <td>@item.Department?.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

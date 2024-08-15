@@ -1,0 +1,50 @@
+﻿@model List<Department>
+@{
+    ViewData["Title"] = "crsdept";
+}
+
+<h1>crsdept</h1>
+
+<select id="dept_id" name="dept_id" class="form form-control" onchange="GetCourse()">
+    @foreach (var deptitem in Model)
+    {
+        <option value="@deptitem.Id">@deptitem.Name</option>
+    }
+</select>
+
+<select id="Crs" name="Crsid" class="form form-control">
+</select>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+
+    function GetCourse() {
+        var deptId = document.getElementById("dept_id").value;
+        var elementcrs = document.getElementById("Crs");
+        console.log(deptId);
+
+        $.ajax({
+            url: "/department/getcrsbydeptid",
+            type: "GET",
+            data: { deptid: deptId },
+            success: function (result) {
+                console.log(result);
+
+                elementcrs.innerHTML = "";
+
+                if (Array.isArray(result)) {
+                    result.forEach(function (crs) {
+                        if (crs.id && crs.name) {
+                            var option = document.createElement("option");
+                            option.value = crs.id;
+                            option.textContent = crs.name;
+                            elementcrs.appendChild(option);
+                        }
+                    });
+                } 
+        });
+    }
+
+
+</script>

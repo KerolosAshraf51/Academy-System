@@ -1,0 +1,17 @@
+﻿@* @model List<Course>
+@{
+    ViewData["Title"] = "CourseDepartment";
+}
+
+<h1>CourseDepartment</h1>
+
+<select id=crs_id" name="crs_id" class="form form-control" >
+
+    @foreach(var crsitem in Model)
+{
+    <option value="@crsitem.Id">@crsitem.Name</option>
+}
+</select>
+
+<select id="dept" name="dept" class="form form-control">
+    </select> *@
