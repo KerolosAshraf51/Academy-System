@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Task2.Models;
 using Task2.Repository;
 
@@ -9,40 +6,36 @@ namespace Task2.Controllers
 {
     public class CourseController : Controller
     {
-        //ITIContext Context = new ITIContext();
         ICourseRepository courseRepository;
         IDepartmentRepository departmentRepository;
-        public CourseController(ICourseRepository courserepo,IDepartmentRepository Deptrepo)
+
+        public CourseController(ICourseRepository courserepo, IDepartmentRepository Deptrepo)
         {
             courseRepository = courserepo;
             departmentRepository = Deptrepo;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int PageNo = 1)
         {
-            List<Course> coursesList = courseRepository.GetAll();
-            //Context.courses.Include(c => c.Department).ToList();
-            return View("Index", coursesList);
+            var coursesList = courseRepository.GetAll();
+
+            int noOfRecordsperpage = 5;
+            int noOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(coursesList.Count) / Convert.ToDouble(noOfRecordsperpage)));
+            int noOfRecordsToSkip = (PageNo - 1) * noOfRecordsperpage;
+
+            ViewBag.PageNo = PageNo;
+            ViewBag.NoOfPages = noOfPages;
+
+            coursesList = coursesList.Skip(noOfRecordsToSkip).Take(noOfRecordsperpage).ToList();
+            return View(coursesList);
         }
+
         [HttpGet]
         public IActionResult Add()
         {
             ViewBag.Departments = departmentRepository.GetAll();
-            /*new SelectList(Context.departments.ToList(), "Id", "Name");*/
             return View();
         }
-
-        //public IActionResult Add()
-        //{
-        //    var departments = departmentRepository.GetAll();
-        //    ViewBag.Departments = departments.Select(d => new SelectListItem
-        //    {
-        //        Value = d.Id.ToString(),
-        //        Text = d.Name
-        //    }).ToList();
-
-        //    return View();
-        //}
 
         [HttpPost]
         public IActionResult SaveCourse(Course course)
@@ -50,37 +43,15 @@ namespace Task2.Controllers
             if (ModelState.IsValid)
             {
                 courseRepository.Update(course);
-                //Context.courses.Add(course);
-                courseRepository.Save();//.SaveChanges();
+                courseRepository.Save();
                 return RedirectToAction("Index");
             }
-            ViewBag.Departments = /*new SelectList(Context.departments.ToList(), "Id", "Name",course.Dept_id*/
-                departmentRepository.GetAll();
+
+            ViewBag.Departments = departmentRepository.GetAll();
             return View("Add", course);
         }
 
-        //public IActionResult SaveCourse(Course course)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        courseRepository.Add(course);
-        //        courseRepository.Save();
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    var departments = departmentRepository.GetAll();
-        //    ViewBag.Departments = departments.Select(d => new SelectListItem
-        //    {
-        //        Value = d.Id.ToString(),
-        //        Text = d.Name,
-        //        Selected = course.Dept_id == d.Id
-        //    }).ToList();
-
-        //    return View("Add", course);
-        //}
-
-        public IActionResult CheckDegree(int Degree, int MinDegree) 
-        
+        public IActionResult CheckDegree(int Degree, int MinDegree)
         {
             if (Degree < MinDegree)
             {
@@ -90,7 +61,6 @@ namespace Task2.Controllers
             {
                 return Json(true);
             }
-
         }
 
         public IActionResult CheckHours(int Hours)
@@ -104,6 +74,7 @@ namespace Task2.Controllers
                 return Json(false);
             }
         }
+
         [HttpGet]
         public IActionResult Search(string searchTerm)
         {
@@ -114,11 +85,19 @@ namespace Task2.Controllers
                 coursesList = coursesList.Where(c => c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
+            // Set default values for pagination
+            int PageNo = 1;
+            int noOfRecordsperpage = 5;
+            int noOfPages = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(coursesList.Count) / Convert.ToDouble(noOfRecordsperpage)));
+            int noOfRecordsToSkip = (PageNo - 1) * noOfRecordsperpage;
+
+            ViewBag.PageNo = PageNo;
+            ViewBag.NoOfPages = noOfPages;
+
+            // Paginate the courses list
+            coursesList = coursesList.Skip(noOfRecordsToSkip).Take(noOfRecordsperpage).ToList();
+
             return View("Index", coursesList);
         }
-
-
-
-
     }
 }
